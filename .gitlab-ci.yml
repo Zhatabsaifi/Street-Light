@@ -1,0 +1,96 @@
+stages:
+
+  - build
+  - test
+  - deploy
+
+maven_build:
+  image: maven:3.6.3-openjdk-11
+  stage: build
+  only:
+    - master
+    - development
+  tags:
+    - virtualize_backend
+  before_script:
+    - echo "** Installing JAR file **"
+    - apt update && apt install gettext -y
+  #  - envsubst < src/main/resources/application.yml > src/main/resources/application-local.yml
+   # - cat src/main/resources/application-local.yml
+
+  script:
+    - mvn clean install -DskipTests=true -Dalt.build.dir=target
+    - ls -al
+  artifacts:
+    paths:
+      - target/*.jar
+  when: manual
+
+test_application:
+
+  image: maven:3.6.3-openjdk-11
+  stage: test
+  only:
+    - development
+    - master
+  tags:
+    - virtualize_backend
+
+  before_script:
+    - echo "** Initializing test engine **"
+  script:
+    - mvn clean test
+  after_script:
+    - echo "** Testing complete **"
+  when: manual
+
+deploy_backend:
+
+  image: google/cloud-sdk:alpine
+  stage: deploy
+  only:
+    - master
+  tags:
+    - virtualize_backend
+  before_script:
+    - "echo ${GITLAB_USER_LOGIN/./-}"
+    - "ServiceName=virtual"
+    - |
+      cat <<EOF >> app.yaml
+      runtime: java11
+      env: standard
+      runtime_config:
+        jdk: openjdk11
+      env_variables:
+
+              DB_HOST: "$DATABASE_HOST"
+              DB_NAME: "$DATABASE_NAME"
+              DB_USERNAME: "$DATABASE_USER"
+              DB_PASSWORD: "$DB_PASSWORD"
+              DB_INSTANCE_NAME: "$DB_INSTANCE_NAME"
+
+      service: $ServiceName
+      handlers:
+      - url: /.*
+        script: this field is required, but ignored
+      manual_scaling:
+        instances: 1
+      instance_class: B1
+      resources:
+        cpu: 1
+        memory_gb: 2
+        disk_size_gb: 10
+      EOF
+    - cat app.yaml
+    - echo $GCP_SERVICE_CRED > ${CI_PIPELINE_ID}.json
+
+  script:
+
+    - gcloud auth activate-service-account --key-file ${CI_PIPELINE_ID}.json
+    - gcloud app deploy --project=hu18-groupa-java target/Virtualize-0.0.1-SNAPSHOT.jar --version v1 --appyaml app.yaml
+    - url=$(gcloud app services browse $ServiceName --no-launch-browser --project hu18-groupa-java)
+    - echo $url
+
+  after_script:
+  - rm $CI_PIPELINE_ID.json
+  when: manual
