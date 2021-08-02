@@ -32,11 +32,7 @@ public class LightServiceImpl implements LightService {
     @Autowired
     private SendMail sendMail;
 
-    /**
-     * This function will add new shop in admin list.
-     * @param shopCommand shop details.
-     * @return admin details.
-     */
+   
     @Transactional
     public AdminEntity insertShop(ShopCommand shopCommand) {
         LightEntity lightEntity = new LightEntity(shopCommand.getShopName(), shopCommand.getGST());
@@ -79,11 +75,6 @@ public class LightServiceImpl implements LightService {
         return admin;
     }
 
-    /**
-     * This function will check GST is valid or not
-     * @param GST GST number
-     * @return return true if GST valid otherwise throw exception
-     */
     public boolean checkGSTValidity(String GST, String adminEmail) {
         String subject = "Status of your request for adding shop ";
         String body = "Your request for adding store is under consideration. We will let you know  once verification is done.";
@@ -108,13 +99,7 @@ public class LightServiceImpl implements LightService {
         return true;
     }
 
-    /**
-     * This function will send mail to the admin. In which list shop is added.
-     * @param adminEmail admin email id
-     * @param subject email subject
-     * @param body email body
-     * @return if mail send successfully then return true otherwise throw exception with internal server error.
-     */
+ 
     public boolean sendShopRegisterSuccessMessage(String adminEmail, String subject, String body) {
 
         // this will send the message to admin
@@ -125,11 +110,7 @@ public class LightServiceImpl implements LightService {
         return true;
     }
 
-    /**
-     * This function will update the shop details in admin list.
-     * @param shopCommand shop and admin details.
-     * @return admin details.
-     */
+  
     @Transactional
     public AdminEntity updateShop(ShopCommand shopCommand) {
 
@@ -173,11 +154,7 @@ public class LightServiceImpl implements LightService {
         return admin;
     }
 
-    /**
-     * This function will delete the shop in admin list and all shop product.
-     * @param shopCommand shop or admin details.
-     * @return status
-     */
+
     @Transactional
     public AdminEntity deleteShop(ShopCommand shopCommand) {
         AdminEntity admin = adminRepository.findByAdminId(shopCommand.getAdminId());
@@ -213,11 +190,7 @@ public class LightServiceImpl implements LightService {
         return admin;
     }
 
-    /**
-     * This function will gives all shops of particular admin through its admin Id
-     * @param id Admin Id
-     * @return Shop Entity
-     */
+ 
     @Transactional
     public Set<LightEntity> getAllShopsByAdminId(Long id) {
 
@@ -230,12 +203,7 @@ public class LightServiceImpl implements LightService {
         return adminEntityOptional.get().getAdminShops();
     }
 
-    /**
-     * This function will insert image into Shop
-     * @param shopId shop Id
-     * @param multipartFile shop Image
-     * @return status message
-     */
+ 
     public String insertShopImage(Long shopId, MultipartFile multipartFile) {
         try{
             LightEntity lightEntity = findShopById(shopId);
@@ -260,11 +228,7 @@ public class LightServiceImpl implements LightService {
         }
     }
 
-    /**
-     * This function will fetch shop through its Id
-     * @param shopId Shop Id
-     * @return ShopEntity
-     */
+
     public LightEntity findShopById(Long shopId) {
         Optional<LightEntity> shopEntity = lightRepository.findById(shopId);
 
