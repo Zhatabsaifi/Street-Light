@@ -1,7 +1,7 @@
 package com.hu.Virtualize.controllers.user;
 
-import com.hu.Virtualize.commands.user.UserInterestCommand;
-import com.hu.Virtualize.entities.UserEntity;
+import com.hu.Virtualize.commands.user.LightCommand;
+import com.hu.Virtualize.entities.LightEntity;
 import com.hu.Virtualize.services.user.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,9 @@ public class LightDetails {
      * @return User entity details.
      */
     @PostMapping("/create")
-    public ResponseEntity<?> insertInterest(@RequestBody UserInterestCommand userInterestCommand) {
-        UserEntity userEntity = statusService.insertInterest(userInterestCommand);
-        return new ResponseEntity<>(userEntity, HttpStatus.OK);
+    public ResponseEntity<?> insertLight(@RequestBody LightCommand lightCommand) {
+        LightEntity lightEntity = statusService.insertLight(lightCommand);
+        return new ResponseEntity<>(lightEntity, HttpStatus.OK);
     }
 
     /**
@@ -37,8 +37,8 @@ public class LightDetails {
      * @return updated user details.
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteInterest(@RequestBody UserInterestCommand userInterestCommand) {
-        UserEntity userEntity = statusService.deleteInterest(userInterestCommand);
-        return new ResponseEntity<>(userEntity, HttpStatus.OK);
+    public ResponseEntity<?> deleteLight(@RequestBody LightCommand lightCommand) {
+        UserEntity userLight = statusService.deleteLight(lightCommand);
+        return new ResponseEntity<>(lightEntity, HttpStatus.OK);
     }
 }
