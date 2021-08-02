@@ -1,6 +1,6 @@
 package com.hu.Virtualize.controllers.admin;
 
-import com.hu.Virtualize.commands.admin.ShopCommand;
+import com.hu.Virtualize.commands.admin.LightCommand;
 import com.hu.Virtualize.entities.AdminEntity;
 import com.hu.Virtualize.entities.LightEntity;
 import com.hu.Virtualize.services.admin.service.LightService;
@@ -29,9 +29,9 @@ public class LightController {
 
     
     @PostMapping("/create")
-    public ResponseEntity<?> insertShop(@RequestBody ShopCommand shopCommand) {
+    public ResponseEntity<?> insertLight(@RequestBody LightCommand lightCommand) {
         log.info("Admin add new shop in his list");
-        AdminEntity admin = lightService.insertShop(shopCommand);
+        AdminEntity admin = lightService.insertLight(shopCommand);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
@@ -45,45 +45,35 @@ public class LightController {
 
    
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteShop(@RequestBody ShopCommand shopCommand) {
+    public ResponseEntity<?> deleteShop(@RequestBody LightCommand lightCommand) {
         log.info("Admin delete the shop in his list");
-        AdminEntity admin = lightService.deleteShop(shopCommand);
+        AdminEntity admin = lightService.deleteLight(lightCommand);
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getShopsById(@PathVariable Long id){
+    public ResponseEntity<?> getLidhtById(@PathVariable Long id){
         log.info("Admin find the shop by shop id");
-        Set<LightEntity> shops = lightService.getAllShopsByAdminId(id);
-        return new ResponseEntity<>(shops,HttpStatus.OK);
-    }
-
-    
-    @PostMapping("/changeLightStatus/{lightId}")
-    public ResponseEntity<String> insertShopImage(@PathVariable String lightId, @RequestParam("image") MultipartFile multipartFile) {
-        log.info("Admin try to change the shop image");
-        String status = lightService.insertShopImage(Long.valueOf(lightId), multipartFile);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        Set<LightEntity> lights = lightService.getAllLightByAdminId(id);
+        return new ResponseEntity<>(lights,HttpStatus.OK);
     }
 
    
     @GetMapping("/status/{lightId}")
     public void renderImageFromDB(@PathVariable String lightId, HttpServletResponse response) {
         try {
-            LightEntity lightEntity = lightService.findShopById(Long.valueOf(lightId));
+            LightEntity lightEntity = lightService.findLightById(Long.valueOf(lightId));
 
-            byte[] byteArray = new byte[lightEntity.getShopImage().length];
+            byte[] byteArray = new byte[lightEntity.getLighStatus().length];
 
             int i = 0;
-            for (Byte wrappedByte : lightEntity.getShopImage()) {
+            for (Byte wrappedByte : lightEntity.getLightSatte()) {
                 byteArray[i++] = wrappedByte; //auto unboxing
             }
 
-            response.setContentType("image/jpeg");
             InputStream is = new ByteArrayInputStream(byteArray);
             IOUtils.copy(is, response.getOutputStream());
         } catch (Exception e) {
-            log.error("Image fetch error: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
