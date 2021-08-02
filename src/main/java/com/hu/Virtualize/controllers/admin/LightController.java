@@ -27,11 +27,7 @@ public class LightController {
     @Autowired
     private LightService lightService;
 
-    /**
-     * This api will help you to add new shop under admin.
-     * @param shopCommand shop and admin details.
-     * @return admin details
-     */
+    
     @PostMapping("/create")
     public ResponseEntity<?> insertShop(@RequestBody ShopCommand shopCommand) {
         log.info("Admin add new shop in his list");
@@ -39,11 +35,7 @@ public class LightController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    /**
-     * This function will update the shop details.
-     * @param shopCommand shop details.
-     * @return updated details
-     */
+   
     @PutMapping("/update")
     public ResponseEntity<?> updateShop(@RequestBody ShopCommand shopCommand) {
         log.info("Admin update the shop details");
@@ -51,11 +43,7 @@ public class LightController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    /**
-     * This function will delete the shop in admin shops.
-     * @param shopCommand shop details
-     * @return updated detail
-     */
+   
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteShop(@RequestBody ShopCommand shopCommand) {
         log.info("Admin delete the shop in his list");
@@ -63,11 +51,6 @@ public class LightController {
         return new ResponseEntity<>(admin, HttpStatus.OK);
     }
 
-    /**
-     * This function will return the shop by shopId.
-     * @param id shop id
-     * @return shop object
-     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getShopsById(@PathVariable Long id){
         log.info("Admin find the shop by shop id");
@@ -75,12 +58,7 @@ public class LightController {
         return new ResponseEntity<>(shops,HttpStatus.OK);
     }
 
-    /**
-     * This api will insert image for specific shop
-     * @param lightId shop Id
-     * @param multipartFile image for shop
-     * @return 200 OK status
-     */
+    
     @PostMapping("/changeLightStatus/{lightId}")
     public ResponseEntity<String> insertShopImage(@PathVariable String lightId, @RequestParam("image") MultipartFile multipartFile) {
         log.info("Admin try to change the shop image");
@@ -88,11 +66,7 @@ public class LightController {
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
-    /**
-     * This function will render the shop image
-     * @param lightId shop id
-     * @param response http servlet response stream
-     */
+   
     @GetMapping("/status/{lightId}")
     public void renderImageFromDB(@PathVariable String lightId, HttpServletResponse response) {
         try {
